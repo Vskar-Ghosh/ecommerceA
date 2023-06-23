@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useCart } from "../context/Cart";
+import { toast } from "react-hot-toast";
 
 const ProductDetails = () => {
   const params = useParams();
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [cart, setCart] = useCart();
 
   //getproduct function
   const getProduct = async () => {
@@ -54,7 +57,14 @@ const ProductDetails = () => {
           <h6 className=" text-xl">description: {product.description}</h6>
           <h6 className=" text-xl">price: ${product.price}</h6>
           <h6 className=" text-xl">Category: {product.category?.name}</h6>
-          <button className=" p-2 bg-green-500 rounded-md hover:bg-green-400 duration-200">
+          <button
+            onClick={() => {
+              setCart([...cart, product]);
+              localStorage.setItem("cart", JSON.stringify([...cart, product]));
+              toast.success("Item Added to Cart");
+            }}
+            className=" p-2 bg-green-500 rounded-md hover:bg-green-400 duration-200"
+          >
             Add To Cart
           </button>
         </div>
@@ -77,7 +87,14 @@ const ProductDetails = () => {
                 <h5>{p.name} </h5>
                 <p>{p.description.substring(0, 20)} ...</p>
                 <p> ${p.price} </p>
-                <button className=" p-2 bg-green-300 m-1 rounded-md hover:bg-green-400 duration-500">
+                <button
+                  onClick={() => {
+                    setCart([...cart, p]);
+                    localStorage.setItem("cart", JSON.stringify([...cart, p]));
+                    toast.success("Item Added to Cart");
+                  }}
+                  className=" p-2 bg-green-300 m-1 rounded-md hover:bg-green-400 duration-500"
+                >
                   Add To Cart
                 </button>
               </div>
